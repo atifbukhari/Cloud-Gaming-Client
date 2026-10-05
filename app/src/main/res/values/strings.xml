@@ -309,4 +309,19 @@
     <string name="analogscroll_none">None (both sticks move the mouse)</string>
     <string name="analogscroll_right">Right analog stick</string>
     <string name="analogscroll_left">Left analog stick</string>
+
+    <string name="demo_catalogue_eyebrow">Cloud Gaming</string>
+    <string name="demo_phone_controller">Use phone as controller</string>
+    <string name="demo_controller_title">Phone Controller</string>
+    <string name="demo_controller_subtitle">Scan this QR code with a phone on the same Wi-Fi network. No app install required.</string>
+    <string name="demo_controller_waiting">Controls become active automatically when a game starts.</string>
+    <string name="demo_controller_unavailable">Connect this TV to a local network to enable phone pairing.</string>
+    <string name="demo_exit_button">Exit</string>
+    <string name="demo_end_session_title">Leave game?</string>
+    <string name="demo_end_session_message">Disconnect from the stream, or end the game on the cloud host and return to the catalogue.</string>
+    <string name="demo_disconnect_only">Disconnect</string>
+    <string name="demo_end_game">End game</string>
+    <string name="demo_ending_session">Ending cloud session…</string>
+    <string name="demo_session_ended">Cloud session ended</string>
+    <string name="demo_session_end_failed">Stream closed; host quit could not be confirmed</string>
 </resources>
