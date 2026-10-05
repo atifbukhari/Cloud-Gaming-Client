@@ -16,7 +16,7 @@ import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
-import java.security.SecureRandom;
+import java.util.UUID;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +42,7 @@ public final class DemoControllerServer {
 
     private DemoControllerServer(Context context) {
         this.context = context.getApplicationContext();
-        this.token = String.format("%06d", new SecureRandom().nextInt(1_000_000));
+        this.token = UUID.randomUUID().toString().replace("-", "");
     }
 
     public static DemoControllerServer ensureStarted(Context context) {
