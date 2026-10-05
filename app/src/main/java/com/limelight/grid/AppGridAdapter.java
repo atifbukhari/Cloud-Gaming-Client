@@ -8,6 +8,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.limelight.AppView;
+import com.limelight.BuildConfig;
 import com.limelight.LimeLog;
 import com.limelight.R;
 import com.limelight.grid.assets.CachedAppAssetLoader;
@@ -28,7 +29,7 @@ import java.util.Set;
 public class AppGridAdapter extends GenericGridAdapter<AppView.AppObject> {
     private static final int ART_WIDTH_PX = 300;
     private static final int SMALL_WIDTH_DP = 100;
-    private static final int LARGE_WIDTH_DP = 150;
+    private static final int LARGE_WIDTH_DP = 180;
 
     private final ComputerDetails computer;
     private final String uniqueId;
@@ -121,16 +122,39 @@ public class AppGridAdapter extends GenericGridAdapter<AppView.AppObject> {
         loader.freeCacheMemory();
     }
 
+    private static int demoPriority(String name) {
+        if (!BuildConfig.DEMO_MODE || name == null) return 100;
+        if (name.equalsIgnoreCase("SuperTuxKart")) return 0;
+        if (name.equalsIgnoreCase("Xonotic")) return 1;
+        if (name.equalsIgnoreCase("War Thunder")) return 2;
+        if (name.equalsIgnoreCase("Veloren")) return 3;
+        return 100;
+    }
+
+    private static boolean isEngineeringOnly(String name) {
+        return BuildConfig.DEMO_MODE && name != null &&
+                (name.equalsIgnoreCase("Test Ball") || name.equalsIgnoreCase("TestBall"));
+    }
+
     private static void sortList(List<AppView.AppObject> list) {
         Collections.sort(list, new Comparator<AppView.AppObject>() {
             @Override
             public int compare(AppView.AppObject lhs, AppView.AppObject rhs) {
-                return lhs.app.getAppName().toLowerCase().compareTo(rhs.app.getAppName().toLowerCase());
+                int leftPriority = demoPriority(lhs.app.getAppName());
+                int rightPriority = demoPriority(rhs.app.getAppName());
+                if (leftPriority != rightPriority) {
+                    return Integer.compare(leftPriority, rightPriority);
+                }
+                return lhs.app.getAppName().compareToIgnoreCase(rhs.app.getAppName());
             }
         });
     }
 
     public void addApp(AppView.AppObject app) {
+        if (isEngineeringOnly(app.app.getAppName())) {
+            return;
+        }
+
         // Update hidden state
         app.isHidden = hiddenAppIds.contains(app.app.getAppId());
 
