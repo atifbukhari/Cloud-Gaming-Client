@@ -30,6 +30,8 @@ Production AdMob IDs must not be inserted until the demo placements are approved
 The demo application ID is:
 `com.atifbukhari.cloudgaming`
 
+The demo branch minimum Android version is API 24 (Android 7.0), matching the current Google Mobile Ads SDK requirement. Upstream/master compatibility is unchanged.
+
 The Java namespace intentionally remains `com.limelight` in v1 to minimize risk to the upstream streaming implementation.
 
 ## Build
