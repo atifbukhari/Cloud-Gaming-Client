@@ -23,6 +23,8 @@ import com.limelight.utils.SpinnerDialog;
 import com.limelight.utils.UiHelper;
 import com.limelight.demo.DemoTelemetry;
 import com.limelight.demo.DemoTelemetryActivity;
+import com.limelight.demo.DemoControllerActivity;
+import com.limelight.demo.DemoControllerServer;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -320,9 +322,20 @@ public class AppView extends Activity implements AdapterFragmentCallbacks {
         String computerName = getIntent().getStringExtra(NAME_EXTRA);
 
         TextView label = findViewById(R.id.appListText);
+        TextView controllerCta = findViewById(R.id.demoControllerCta);
         if (BuildConfig.DEMO_MODE) {
             setTitle(getString(R.string.demo_catalogue_title));
             label.setText(R.string.demo_catalogue_tagline);
+
+            boolean isTv = getPackageManager().hasSystemFeature(PackageManager.FEATURE_LEANBACK);
+            if (isTv) {
+                DemoControllerServer.ensureStarted(getApplicationContext());
+                controllerCta.setVisibility(View.VISIBLE);
+                controllerCta.setOnClickListener(v ->
+                        startActivity(new Intent(AppView.this, DemoControllerActivity.class)));
+            } else {
+                controllerCta.setVisibility(View.GONE);
+            }
 
             if (BuildConfig.DEMO_ADS_ENABLED &&
                     !getPackageManager().hasSystemFeature(PackageManager.FEATURE_LEANBACK)) {
@@ -340,6 +353,7 @@ public class AppView extends Activity implements AdapterFragmentCallbacks {
             setTitle(computerName);
             label.setText(computerName);
             findViewById(R.id.adContainer).setVisibility(View.GONE);
+            controllerCta.setVisibility(View.GONE);
         }
 
         // Bind to the computer manager service
