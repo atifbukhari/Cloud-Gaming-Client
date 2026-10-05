@@ -37,10 +37,12 @@ import com.limelight.utils.ShortcutHelper;
 import com.limelight.utils.SpinnerDialog;
 import com.limelight.utils.UiHelper;
 import com.limelight.demo.DemoTelemetry;
+import com.limelight.demo.DemoControllerServer;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.PictureInPictureParams;
 import android.app.Service;
 import android.content.ComponentName;
@@ -129,6 +131,14 @@ public class Game extends Activity implements SurfaceHolder.Callback,
     private String pcName;
     private String appName;
     private NvApp app;
+
+    // Demo-only session controls. These mirror the parameters already used to
+    // establish the Moonlight connection so host-side termination can remain
+    // outside the proven streaming/decoder/input core.
+    private String streamHost;
+    private int streamHttpsPort;
+    private String streamUniqueId;
+    private X509Certificate streamServerCert;
     private float desiredRefreshRate;
 
     private InputCaptureProvider inputCaptureProvider;
@@ -273,6 +283,14 @@ public class Game extends Activity implements SurfaceHolder.Callback,
 
         performanceOverlayView = findViewById(R.id.performanceOverlay);
 
+        View endSessionButton = findViewById(R.id.demoEndSessionButton);
+        if (BuildConfig.DEMO_MODE) {
+            endSessionButton.setVisibility(View.VISIBLE);
+            endSessionButton.setOnClickListener(v -> showEndSessionDialog());
+        } else {
+            endSessionButton.setVisibility(View.GONE);
+        }
+
         inputCaptureProvider = InputCaptureManager.getInputCaptureProvider(this, this);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -320,6 +338,10 @@ public class Game extends Activity implements SurfaceHolder.Callback,
         int httpsPort = Game.this.getIntent().getIntExtra(EXTRA_HTTPS_PORT, 0); // 0 is treated as unknown
         int appId = Game.this.getIntent().getIntExtra(EXTRA_APP_ID, StreamConfiguration.INVALID_APP_ID);
         String uniqueId = Game.this.getIntent().getStringExtra(EXTRA_UNIQUEID);
+
+        streamHost = host;
+        streamHttpsPort = httpsPort;
+        streamUniqueId = uniqueId;
         boolean appSupportsHdr = Game.this.getIntent().getBooleanExtra(EXTRA_APP_HDR, false);
         byte[] derCertData = Game.this.getIntent().getByteArrayExtra(EXTRA_SERVER_CERT);
 
@@ -334,6 +356,7 @@ public class Game extends Activity implements SurfaceHolder.Callback,
         } catch (CertificateException e) {
             e.printStackTrace();
         }
+        streamServerCert = serverCert;
 
         if (appId == StreamConfiguration.INVALID_APP_ID) {
             finish();
@@ -373,9 +396,12 @@ public class Game extends Activity implements SurfaceHolder.Callback,
             }
         }
 
-        // Demo builds expose real client-side stream telemetry on screen.
-        // Normal Moonlight behavior remains preference-controlled outside demo mode.
-        if (BuildConfig.DEMO_MODE || prefConfig.enablePerfOverlay) {
+        // Demo builds need the renderer to calculate real performance stats,
+        // not merely make the overlay TextView visible.
+        if (BuildConfig.DEMO_MODE) {
+            prefConfig.enablePerfOverlay = true;
+        }
+        if (prefConfig.enablePerfOverlay) {
             performanceOverlayView.setVisibility(View.VISIBLE);
         }
 
@@ -1097,6 +1123,13 @@ public class Game extends Activity implements SurfaceHolder.Callback,
     protected void onStop() {
         super.onStop();
 
+        if (BuildConfig.DEMO_MODE) {
+            DemoControllerServer.setInputListener(null);
+            if (isFinishing()) {
+                DemoTelemetry.endSession(this, "activity_stopped");
+            }
+        }
+
         SpinnerDialog.closeDialogs(this);
         Dialog.closeDialogs();
 
@@ -1163,6 +1196,98 @@ public class Game extends Activity implements SurfaceHolder.Callback,
         }
 
         finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (BuildConfig.DEMO_MODE && (connecting || connected)) {
+            showEndSessionDialog();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    private void showEndSessionDialog() {
+        if (isFinishing()) {
+            return;
+        }
+
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.demo_end_session_title)
+                .setMessage(R.string.demo_end_session_message)
+                .setPositiveButton(R.string.demo_end_game, (dialog, which) -> endRemoteSessionAndExit())
+                .setNeutralButton(R.string.demo_disconnect_only, (dialog, which) -> {
+                    DemoTelemetry.event(this, "user_exit_requested", "disconnect_only");
+                    finish();
+                })
+                .setNegativeButton(android.R.string.cancel, null)
+                .show();
+    }
+
+    private void endRemoteSessionAndExit() {
+        DemoTelemetry.event(this, "user_exit_requested", "end_remote_game");
+        Toast.makeText(this, R.string.demo_ending_session, Toast.LENGTH_SHORT).show();
+
+        new Thread(() -> {
+            boolean quitSucceeded = false;
+            try {
+                NvHTTP httpConn = new NvHTTP(streamHost, streamHttpsPort, streamUniqueId,
+                        streamServerCert, PlatformBinding.getCryptoProvider(Game.this));
+                quitSucceeded = httpConn.quitApp();
+            } catch (Exception e) {
+                LimeLog.warning("Demo remote session termination failed: " + e.getMessage());
+            }
+
+            final boolean finalQuitSucceeded = quitSucceeded;
+            runOnUiThread(() -> {
+                DemoTelemetry.event(Game.this, "remote_quit_result",
+                        finalQuitSucceeded ? "success" : "failed");
+                Toast.makeText(Game.this,
+                        finalQuitSucceeded ? R.string.demo_session_ended : R.string.demo_session_end_failed,
+                        Toast.LENGTH_SHORT).show();
+                finish();
+            });
+        }, "DemoEndSession").start();
+    }
+
+    private void sendDemoPhoneControllerInput(String control, boolean pressed) {
+        if (conn == null || !connected || keyboardTranslator == null) {
+            return;
+        }
+
+        int keyCode;
+        switch (control) {
+            case "up":
+                keyCode = KeyEvent.KEYCODE_DPAD_UP;
+                break;
+            case "down":
+                keyCode = KeyEvent.KEYCODE_DPAD_DOWN;
+                break;
+            case "left":
+                keyCode = KeyEvent.KEYCODE_DPAD_LEFT;
+                break;
+            case "right":
+                keyCode = KeyEvent.KEYCODE_DPAD_RIGHT;
+                break;
+            case "a":
+                keyCode = KeyEvent.KEYCODE_SPACE;
+                break;
+            case "b":
+                keyCode = KeyEvent.KEYCODE_ESCAPE;
+                break;
+            case "start":
+                keyCode = KeyEvent.KEYCODE_ENTER;
+                break;
+            default:
+                return;
+        }
+
+        short translated = keyboardTranslator.translate(keyCode, -1);
+        if (translated != 0) {
+            conn.sendKeyboardInput(translated,
+                    pressed ? KeyboardPacket.KEY_DOWN : KeyboardPacket.KEY_UP,
+                    getModifierState(keyCode), (byte) 0);
+        }
     }
 
     private void setInputGrabState(boolean grab) {
@@ -2442,6 +2567,7 @@ public class Game extends Activity implements SurfaceHolder.Callback,
     public void connectionStarted() {
         if (BuildConfig.DEMO_MODE) {
             DemoTelemetry.event(this, "connection_started", appName);
+            DemoControllerServer.setInputListener(this::sendDemoPhoneControllerInput);
         }
 
         runOnUiThread(new Runnable() {
