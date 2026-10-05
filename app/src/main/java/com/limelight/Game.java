@@ -679,13 +679,25 @@ public class Game extends Activity implements SurfaceHolder.Callback,
     }
 
     public void setMetaKeyCaptureState(boolean enabled) {
-        // Android has native keyboard capture support starting in API 36.1
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.BAKLAVA && Build.VERSION.SDK_INT_FULL >= Build.VERSION_CODES_FULL.BAKLAVA_1) {
-            WindowManager.LayoutParams windowLayoutParams = getWindow().getAttributes();
-            windowLayoutParams.setKeyboardCaptureEnabled(enabled);
-            getWindow().setAttributes(windowLayoutParams);
+        // Upstream uses API 36.1+ symbols that are not present in the stable SDK 36
+        // compiler. Resolve the native keyboard-capture API dynamically so the demo
+        // build remains SDK-36 compatible while still using the API when available.
+        boolean nativeCaptureHandled = false;
+        if (Build.VERSION.SDK_INT >= 36) {
+            try {
+                WindowManager.LayoutParams windowLayoutParams = getWindow().getAttributes();
+                Method captureMethod = WindowManager.LayoutParams.class
+                        .getMethod("setKeyboardCaptureEnabled", boolean.class);
+                captureMethod.invoke(windowLayoutParams, enabled);
+                getWindow().setAttributes(windowLayoutParams);
+                nativeCaptureHandled = true;
+            } catch (NoSuchMethodException ignored) {
+            } catch (InvocationTargetException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
         }
-        else {
+
+        if (!nativeCaptureHandled) {
             // This uses custom APIs present on some Samsung devices to allow capture of
             // meta key events while streaming.
             try {
@@ -2584,9 +2596,17 @@ public class Game extends Activity implements SurfaceHolder.Callback,
                     Surface.FRAME_RATE_COMPATIBILITY_FIXED_SOURCE);
         }
 
-        // Disable producer throttling on the underlying surface for reduced latency
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.CINNAMON_BUN) {
-            holder.getSurface().setProducerThrottlingEnabled(false);
+        // Disable producer throttling on newer Android releases when the API exists.
+        // Reflection keeps this source buildable against stable SDK 36.
+        if (Build.VERSION.SDK_INT >= 36) {
+            try {
+                Method throttleMethod = Surface.class
+                        .getMethod("setProducerThrottlingEnabled", boolean.class);
+                throttleMethod.invoke(holder.getSurface(), false);
+            } catch (NoSuchMethodException ignored) {
+            } catch (InvocationTargetException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
         }
     }
 
