@@ -3,16 +3,34 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#0A0F1C"
     tools:context=".AppView">
+
+    <TextView
+        android:id="@+id/demoEyebrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="22dp"
+        android:letterSpacing="0.14"
+        android:text="@string/demo_catalogue_eyebrow"
+        android:textAllCaps="true"
+        android:textColor="#6EA8FF"
+        android:textSize="12sp"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/demoTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:paddingTop="8dp"
+        android:layout_below="@id/demoEyebrow"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="4dp"
         android:text="@string/demo_catalogue_title"
+        android:textColor="#FFFFFFFF"
         android:textSize="30sp"
         android:textStyle="bold" />
 
@@ -21,13 +39,35 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/demoTitle"
-        android:layout_centerHorizontal="true"
-        android:gravity="center"
-        android:paddingTop="2dp"
-        android:paddingBottom="8dp"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="2dp"
+        android:gravity="start"
+        android:paddingBottom="14dp"
         android:preferKeepClear="true"
         android:text="@string/demo_catalogue_tagline"
+        android:textColor="#AFC0D9"
         android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/demoControllerCta"
+        android:layout_width="wrap_content"
+        android:layout_height="46dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@id/demoTitle"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/demo_controller_cta_background"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:minWidth="190dp"
+        android:paddingStart="18dp"
+        android:paddingEnd="18dp"
+        android:text="@string/demo_phone_controller"
+        android:textColor="#FFFFFFFF"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:visibility="gone" />
 
     <FrameLayout
         android:id="@+id/adContainer"
