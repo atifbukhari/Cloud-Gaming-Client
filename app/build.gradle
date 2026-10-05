@@ -17,7 +17,6 @@ android {
         // Demo-client feature gates. The streaming engine remains upstream Moonlight.
         buildConfigField "boolean", "DEMO_MODE", "true"
         buildConfigField "boolean", "DEMO_ADS_ENABLED", "true"
-        buildConfigField "String", "TELEMETRY_ENDPOINT", """"
 
         // Generate native debug symbols to allow Google Play to symbolicate our native crashes
         ndk.debugSymbolLevel = 'FULL'
