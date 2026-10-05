@@ -21,6 +21,12 @@ import com.limelight.utils.ServerHelper;
 import com.limelight.utils.ShortcutHelper;
 import com.limelight.utils.SpinnerDialog;
 import com.limelight.utils.UiHelper;
+import com.limelight.demo.DemoTelemetry;
+import com.limelight.demo.DemoTelemetryActivity;
+
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 
 import android.app.Activity;
 import android.app.Service;
@@ -28,6 +34,7 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -63,6 +70,7 @@ public class AppView extends Activity implements AdapterFragmentCallbacks {
     private boolean inForeground;
     private boolean showHiddenApps;
     private HashSet<Integer> hiddenAppIds = new HashSet<>();
+    private AdView demoBannerAd;
 
     private final static int START_OR_RESUME_ID = 1;
     private final static int QUIT_ID = 2;
@@ -70,6 +78,7 @@ public class AppView extends Activity implements AdapterFragmentCallbacks {
     private final static int VIEW_DETAILS_ID = 5;
     private final static int CREATE_SHORTCUT_ID = 6;
     private final static int HIDE_APP_ID = 7;
+    private final static int DEMO_TELEMETRY_ID = 1001;
 
     public final static String HIDDEN_APPS_PREF_FILENAME = "HiddenApps";
 
@@ -311,8 +320,27 @@ public class AppView extends Activity implements AdapterFragmentCallbacks {
         String computerName = getIntent().getStringExtra(NAME_EXTRA);
 
         TextView label = findViewById(R.id.appListText);
-        setTitle(computerName);
-        label.setText(computerName);
+        if (BuildConfig.DEMO_MODE) {
+            setTitle(getString(R.string.demo_catalogue_title));
+            label.setText(R.string.demo_catalogue_tagline);
+
+            if (BuildConfig.DEMO_ADS_ENABLED &&
+                    !getPackageManager().hasSystemFeature(PackageManager.FEATURE_LEANBACK)) {
+                MobileAds.initialize(this, initializationStatus -> { });
+                demoBannerAd = findViewById(R.id.demoBannerAd);
+                demoBannerAd.loadAd(new AdRequest.Builder().build());
+            }
+            else {
+                findViewById(R.id.adContainer).setVisibility(View.GONE);
+            }
+
+            DemoTelemetry.event(this, "catalogue_opened", computerName);
+        }
+        else {
+            setTitle(computerName);
+            label.setText(computerName);
+            findViewById(R.id.adContainer).setVisibility(View.GONE);
+        }
 
         // Bind to the computer manager service
         bindService(new Intent(this, ComputerManagerService.class), serviceConnection,
@@ -367,6 +395,11 @@ public class AppView extends Activity implements AdapterFragmentCallbacks {
         if (managerBinder != null) {
             unbindService(serviceConnection);
         }
+
+        if (demoBannerAd != null) {
+            demoBannerAd.destroy();
+            demoBannerAd = null;
+        }
     }
 
     @Override
@@ -386,6 +419,24 @@ public class AppView extends Activity implements AdapterFragmentCallbacks {
 
         inForeground = false;
         stopComputerUpdates();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (BuildConfig.DEMO_MODE) {
+            menu.add(Menu.NONE, DEMO_TELEMETRY_ID, Menu.NONE,
+                    getString(R.string.demo_telemetry_menu));
+        }
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == DEMO_TELEMETRY_ID) {
+            startActivity(new Intent(this, DemoTelemetryActivity.class));
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -636,6 +687,9 @@ public class AppView extends Activity implements AdapterFragmentCallbacks {
                 if (lastRunningAppId != 0) {
                     openContextMenu(arg1);
                 } else {
+                    if (BuildConfig.DEMO_MODE) {
+                        DemoTelemetry.event(AppView.this, "game_selected", app.app.getAppName());
+                    }
                     ServerHelper.doStart(AppView.this, app.app, computer, managerBinder);
                 }
             }
