@@ -8,7 +8,9 @@ android {
     namespace 'com.limelight'
 
     defaultConfig {
-        minSdk 21
+        // Google Mobile Ads 25.5 requires API 24. This demo targets modern
+        // Android TV/Google TV and Android phones rather than legacy API 21 devices.
+        minSdk 24
         targetSdk 36
 
         versionName "12.2-demo1"
