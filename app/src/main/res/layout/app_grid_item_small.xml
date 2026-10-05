@@ -1,29 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="100dp"
-    android:layout_height="133dp"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="128dp"
+    android:layout_height="172dp"
+    android:layout_margin="5dp"
+    android:background="@drawable/demo_game_card_selector"
+    android:clickable="true"
+    android:focusable="true"
     android:padding="5dp">
+
     <ImageView
         android:id="@+id/grid_image"
-        android:cropToPadding="false"
-        android:scaleType="fitXY"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </ImageView>
-    <ImageView
-        android:id="@+id/grid_overlay"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
-        android:layout_width="33dp"
-        android:layout_height="33dp">
-    </ImageView>
+        android:layout_height="match_parent"
+        android:contentDescription="@null"
+        android:cropToPadding="false"
+        android:scaleType="centerCrop" />
+
     <TextView
         android:id="@+id/grid_text"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/grid_overlay"
-        android:layout_margin="5dp"
-        android:gravity="center"
-        android:textSize="14sp">
-    </TextView>
-</RelativeLayout>
+        android:layout_height="52dp"
+        android:layout_gravity="bottom"
+        android:background="@drawable/demo_game_title_gradient"
+        android:ellipsize="end"
+        android:gravity="bottom|start"
+        android:maxLines="2"
+        android:paddingStart="12dp"
+        android:paddingEnd="10dp"
+        android:paddingBottom="11dp"
+        android:textColor="#FFFFFFFF"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:id="@+id/grid_overlay"
+        android:layout_width="34dp"
+        android:layout_height="34dp"
+        android:layout_gravity="top|end"
+        android:layout_margin="9dp"
+        android:background="#B8000000"
+        android:contentDescription="@null"
+        android:padding="8dp" />
+
+</FrameLayout>
