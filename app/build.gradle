@@ -11,8 +11,13 @@ android {
         minSdk 21
         targetSdk 36
 
-        versionName "12.2"
+        versionName "12.2-demo1"
         versionCode = 315
+
+        // Demo-client feature gates. The streaming engine remains upstream Moonlight.
+        buildConfigField "boolean", "DEMO_MODE", "true"
+        buildConfigField "boolean", "DEMO_ADS_ENABLED", "true"
+        buildConfigField "String", "TELEMETRY_ENDPOINT", """"
 
         // Generate native debug symbols to allow Google Play to symbolicate our native crashes
         ndk.debugSymbolLevel = 'FULL'
@@ -37,7 +42,7 @@ android {
                 }
             }
 
-            applicationId "com.limelight.root"
+            applicationId "com.atifbukhari.cloudgaming.root"
             dimension "root"
             buildConfigField "boolean", "ROOT_BUILD", "true"
         }
@@ -49,7 +54,7 @@ android {
                 }
             }
 
-            applicationId "com.limelight"
+            applicationId "com.atifbukhari.cloudgaming"
             dimension "root"
             buildConfigField "boolean", "ROOT_BUILD", "false"
         }
@@ -84,8 +89,8 @@ android {
     buildTypes {
         debug {
             applicationIdSuffix ".debug"
-            resValue "string", "app_label", "Moonlight (Debug)"
-            resValue "string", "app_label_root", "Moonlight (Root Debug)"
+            resValue "string", "app_label", "Cloud Gaming (Demo)"
+            resValue "string", "app_label_root", "Cloud Gaming (Root Demo)"
         }
         release {
             // To whomever is releasing/using an APK in release mode with
@@ -118,9 +123,8 @@ android {
             // is to please change the applicationId before you publish.
             //
             // TL;DR: Leave the following line alone!
-            applicationIdSuffix ".unofficial"
-            resValue "string", "app_label", "Moonlight"
-            resValue "string", "app_label_root", "Moonlight (Root)"
+            resValue "string", "app_label", "Cloud Gaming"
+            resValue "string", "app_label_root", "Cloud Gaming (Root)"
 
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
@@ -148,6 +152,7 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:5.5.0'
     implementation 'org.jmdns:jmdns:3.6.3'
     implementation 'com.github.cgutman:ShieldControllerExtensions:1.0.1'
+    implementation 'com.google.android.gms:play-services-ads:25.5.0'
 
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.5'
 }
