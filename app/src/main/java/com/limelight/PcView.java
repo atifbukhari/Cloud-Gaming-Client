@@ -65,6 +65,7 @@ public class PcView extends Activity implements AdapterFragmentCallbacks {
     private ShortcutHelper shortcutHelper;
     private ComputerManagerService.ComputerManagerBinder managerBinder;
     private boolean freezeUpdates, runningPolling, inForeground, completeOnCreateCalled;
+    private boolean demoAutoEntered;
     private final ServiceConnection serviceConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder binder) {
             final ComputerManagerService.ComputerManagerBinder localBinder =
@@ -739,6 +740,18 @@ public class PcView extends Activity implements AdapterFragmentCallbacks {
 
         // Notify the view that the data has changed
         pcGridAdapter.notifyDataSetChanged();
+
+        // Demo journey: after the one-time pairing step, skip the technical
+        // server picker when exactly one paired online host is available.
+        if (BuildConfig.DEMO_MODE &&
+                !demoAutoEntered &&
+                inForeground &&
+                pcGridAdapter.getCount() == 1 &&
+                details.state == ComputerDetails.State.ONLINE &&
+                details.pairState == PairState.PAIRED) {
+            demoAutoEntered = true;
+            doAppList(details, false, false);
+        }
     }
 
     @Override
