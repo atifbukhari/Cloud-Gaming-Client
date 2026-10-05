@@ -4,10 +4,54 @@ on:
   push:
     branches:
       - demo-client-v1
+    paths:
+      - "app/**"
+      - "gradle/**"
+      - "gradlew"
+      - "gradlew.bat"
+      - "build.gradle"
+      - "settings.gradle"
+      - ".github/workflows/demo-client-apk.yml"
   workflow_dispatch:
 
+concurrency:
+  group: demo-client-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
+  preflight:
+    name: Client preflight
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout fork
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: gradle
+
+      - name: Install required Android components
+        run: |
+          SDKMANAGER="$(find "$ANDROID_SDK_ROOT/cmdline-tools" -type f -name sdkmanager | sort | tail -1)"
+          yes | "$SDKMANAGER" --licenses >/dev/null || true
+          "$SDKMANAGER" "platforms;android-36" "ndk;29.0.14206865"
+
+      - name: Compile Java and resources
+        run: |
+          chmod +x gradlew
+          ./gradlew             :app:compileNonRootDebugJavaWithJavac             :app:processNonRootDebugResources             --stacktrace
+
   build-debug-apk:
+    name: Package demo APK
+    needs: preflight
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[build apk]')
     runs-on: ubuntu-latest
     timeout-minutes: 45
 
@@ -26,9 +70,7 @@ jobs:
 
       - name: Install required Android components
         run: |
-          echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
           SDKMANAGER="$(find "$ANDROID_SDK_ROOT/cmdline-tools" -type f -name sdkmanager | sort | tail -1)"
-          echo "sdkmanager=$SDKMANAGER"
           yes | "$SDKMANAGER" --licenses >/dev/null || true
           "$SDKMANAGER" "platforms;android-36" "ndk;29.0.14206865"
 
