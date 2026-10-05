@@ -134,6 +134,11 @@
             android:exported="false"
             android:resizeableActivity="true" />
         <activity
+            android:name=".demo.DemoControllerActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:resizeableActivity="true" />
+        <activity
             android:name=".preferences.StreamSettings"
             android:resizeableActivity="true"
             android:enableOnBackInvokedCallback="true"
