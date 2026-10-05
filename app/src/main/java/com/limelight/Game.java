@@ -36,6 +36,7 @@ import com.limelight.utils.ServerHelper;
 import com.limelight.utils.ShortcutHelper;
 import com.limelight.utils.SpinnerDialog;
 import com.limelight.utils.UiHelper;
+import com.limelight.demo.DemoTelemetry;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
@@ -310,6 +311,10 @@ public class Game extends Activity implements SurfaceHolder.Callback,
         appName = Game.this.getIntent().getStringExtra(EXTRA_APP_NAME);
         pcName = Game.this.getIntent().getStringExtra(EXTRA_PC_NAME);
 
+        if (BuildConfig.DEMO_MODE) {
+            DemoTelemetry.beginSession(this, appName, pcName);
+        }
+
         String host = Game.this.getIntent().getStringExtra(EXTRA_HOST);
         int port = Game.this.getIntent().getIntExtra(EXTRA_PORT, NvHTTP.DEFAULT_HTTP_PORT);
         int httpsPort = Game.this.getIntent().getIntExtra(EXTRA_HTTPS_PORT, 0); // 0 is treated as unknown
@@ -368,8 +373,9 @@ public class Game extends Activity implements SurfaceHolder.Callback,
             }
         }
 
-        // Check if the user has enabled performance stats overlay
-        if (prefConfig.enablePerfOverlay) {
+        // Demo builds expose real client-side stream telemetry on screen.
+        // Normal Moonlight behavior remains preference-controlled outside demo mode.
+        if (BuildConfig.DEMO_MODE || prefConfig.enablePerfOverlay) {
             performanceOverlayView.setVisibility(View.VISIBLE);
         }
 
@@ -2211,6 +2217,9 @@ public class Game extends Activity implements SurfaceHolder.Callback,
 
     @Override
     public void stageStarting(final String stage) {
+        if (BuildConfig.DEMO_MODE) {
+            DemoTelemetry.event(this, "stage_starting", stage);
+        }
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -2223,6 +2232,9 @@ public class Game extends Activity implements SurfaceHolder.Callback,
 
     @Override
     public void stageComplete(String stage) {
+        if (BuildConfig.DEMO_MODE) {
+            DemoTelemetry.event(this, "stage_complete", stage);
+        }
     }
 
     private void stopConnection() {
@@ -2250,6 +2262,11 @@ public class Game extends Activity implements SurfaceHolder.Callback,
 
     @Override
     public void stageFailed(final String stage, final int portFlags, final int errorCode) {
+        if (BuildConfig.DEMO_MODE) {
+            DemoTelemetry.event(this, "stage_failed",
+                    stage + " error=" + errorCode + " ports=" + portFlags);
+        }
+
         // Perform a connection test if the failure could be due to a blocked port
         // This does network I/O, so don't do it on the main thread.
         final int portTestResult = MoonBridge.testClientConnectivity(ServerHelper.CONNECTION_TEST_SERVER, 443, portFlags);
@@ -2290,6 +2307,10 @@ public class Game extends Activity implements SurfaceHolder.Callback,
 
     @Override
     public void connectionTerminated(final int errorCode) {
+        if (BuildConfig.DEMO_MODE) {
+            DemoTelemetry.endSession(this, "connection_terminated error=" + errorCode);
+        }
+
         // Perform a connection test if the failure could be due to a blocked port
         // This does network I/O, so don't do it on the main thread.
         final int portFlags = MoonBridge.getPortFlagsFromTerminationErrorCode(errorCode);
@@ -2373,6 +2394,10 @@ public class Game extends Activity implements SurfaceHolder.Callback,
 
     @Override
     public void connectionStatusUpdate(final int connectionStatus) {
+        if (BuildConfig.DEMO_MODE) {
+            DemoTelemetry.event(this, "connection_status", Integer.toString(connectionStatus));
+        }
+
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -2403,6 +2428,10 @@ public class Game extends Activity implements SurfaceHolder.Callback,
 
     @Override
     public void connectionStarted() {
+        if (BuildConfig.DEMO_MODE) {
+            DemoTelemetry.event(this, "connection_started", appName);
+        }
+
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -2662,6 +2691,10 @@ public class Game extends Activity implements SurfaceHolder.Callback,
 
     @Override
     public void onPerfUpdate(final String text) {
+        if (BuildConfig.DEMO_MODE) {
+            DemoTelemetry.perf(this, text);
+        }
+
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
