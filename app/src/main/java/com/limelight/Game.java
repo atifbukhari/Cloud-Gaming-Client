@@ -136,6 +136,7 @@ public class Game extends Activity implements SurfaceHolder.Callback,
     // establish the Moonlight connection so host-side termination can remain
     // outside the proven streaming/decoder/input core.
     private String streamHost;
+    private int streamHttpPort;
     private int streamHttpsPort;
     private String streamUniqueId;
     private X509Certificate streamServerCert;
@@ -340,6 +341,7 @@ public class Game extends Activity implements SurfaceHolder.Callback,
         String uniqueId = Game.this.getIntent().getStringExtra(EXTRA_UNIQUEID);
 
         streamHost = host;
+        streamHttpPort = port;
         streamHttpsPort = httpsPort;
         streamUniqueId = uniqueId;
         boolean appSupportsHdr = Game.this.getIntent().getBooleanExtra(EXTRA_APP_HDR, false);
@@ -1231,7 +1233,9 @@ public class Game extends Activity implements SurfaceHolder.Callback,
         new Thread(() -> {
             boolean quitSucceeded = false;
             try {
-                NvHTTP httpConn = new NvHTTP(streamHost, streamHttpsPort, streamUniqueId,
+                ComputerDetails.AddressTuple address =
+                        new ComputerDetails.AddressTuple(streamHost, streamHttpPort);
+                NvHTTP httpConn = new NvHTTP(address, streamHttpsPort, streamUniqueId,
                         streamServerCert, PlatformBinding.getCryptoProvider(Game.this));
                 quitSucceeded = httpConn.quitApp();
             } catch (Exception e) {
