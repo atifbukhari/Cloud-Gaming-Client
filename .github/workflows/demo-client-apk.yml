@@ -30,7 +30,7 @@ jobs:
           SDKMANAGER="$(find "$ANDROID_SDK_ROOT/cmdline-tools" -type f -name sdkmanager | sort | tail -1)"
           echo "sdkmanager=$SDKMANAGER"
           yes | "$SDKMANAGER" --licenses >/dev/null || true
-          "$SDKMANAGER" "platforms;android-37" "ndk;29.0.14206865"
+          "$SDKMANAGER" "platforms;android-36" "ndk;29.0.14206865"
 
       - name: Build demo APK
         run: |
