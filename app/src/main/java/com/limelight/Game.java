@@ -39,6 +39,7 @@ import com.limelight.utils.UiHelper;
 import com.limelight.demo.DemoTelemetry;
 import com.limelight.demo.DemoControllerServer;
 import com.limelight.demo.DemoQrCode;
+import com.limelight.demo.DemoStreamProfile;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
@@ -229,8 +230,17 @@ public class Game extends Activity implements SurfaceHolder.Callback,
         spinner = SpinnerDialog.displayDialog(this, getResources().getString(R.string.conn_establishing_title),
                 getResources().getString(R.string.conn_establishing_msg), true);
 
-        // Read the stream preferences
+        // Read the stream preferences. Demo per-game profiles are a thin layer
+        // over the existing Moonlight configuration; Auto leaves it untouched.
+        int appId = Game.this.getIntent().getIntExtra(
+                EXTRA_APP_ID, StreamConfiguration.INVALID_APP_ID);
+        String computerUuid = Game.this.getIntent().getStringExtra(EXTRA_PC_UUID);
+
         prefConfig = PreferenceConfiguration.readPreferences(this);
+        if (BuildConfig.DEMO_MODE &&
+                appId != StreamConfiguration.INVALID_APP_ID) {
+            DemoStreamProfile.apply(this, computerUuid, appId, prefConfig);
+        }
         tombstonePrefs = Game.this.getSharedPreferences("DecoderTombstone", 0);
 
         // Enter landscape unless we're on a square screen
@@ -334,12 +344,13 @@ public class Game extends Activity implements SurfaceHolder.Callback,
 
         if (BuildConfig.DEMO_MODE) {
             DemoTelemetry.beginSession(this, appName, pcName);
+            DemoTelemetry.event(this, "stream_profile_applied",
+                    DemoStreamProfile.get(this, computerUuid, appId));
         }
 
         String host = Game.this.getIntent().getStringExtra(EXTRA_HOST);
         int port = Game.this.getIntent().getIntExtra(EXTRA_PORT, NvHTTP.DEFAULT_HTTP_PORT);
         int httpsPort = Game.this.getIntent().getIntExtra(EXTRA_HTTPS_PORT, 0); // 0 is treated as unknown
-        int appId = Game.this.getIntent().getIntExtra(EXTRA_APP_ID, StreamConfiguration.INVALID_APP_ID);
         String uniqueId = Game.this.getIntent().getStringExtra(EXTRA_UNIQUEID);
 
         streamHost = host;
