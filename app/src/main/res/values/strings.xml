@@ -329,9 +329,12 @@
     <string name="demo_hero_action_play">Play</string>
     <string name="demo_hero_action_resume">Resume</string>
     <string name="demo_hero_profile_format">%1$dx%2$d · %3$d FPS · %4$.1f Mbps · %5$s</string>
+    <string name="demo_profile_auto">Auto</string>
     <string name="demo_profile_fast">Fast</string>
     <string name="demo_profile_balanced">Balanced</string>
     <string name="demo_profile_quality">Quality</string>
+    <string name="demo_profile_picker_title">Stream profile</string>
+    <string name="demo_profile_picker_subtitle">Auto keeps the current Moonlight settings. Other profiles only adjust frame pacing in this first version.</string>
     <string name="demo_end_session_title">Leave game?</string>
     <string name="demo_end_session_message">Disconnect from the stream, or end the game on the cloud host and return to the catalogue.</string>
     <string name="demo_disconnect_only">Disconnect</string>
