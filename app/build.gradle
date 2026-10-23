@@ -13,8 +13,8 @@ android {
         minSdk 24
         targetSdk 36
 
-        versionName "12.3-demo1"
-        versionCode = 316
+        versionName "12.3-demo2"
+        versionCode = 317
 
         // Demo-client feature gates. The streaming engine remains upstream Moonlight.
         buildConfigField "boolean", "DEMO_MODE", "true"
