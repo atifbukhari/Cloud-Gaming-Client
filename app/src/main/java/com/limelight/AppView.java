@@ -388,9 +388,23 @@ public class AppView extends Activity implements AdapterFragmentCallbacks {
         }
 
         PreferenceConfiguration prefs = PreferenceConfiguration.readPreferences(this);
+        int profileName;
+        switch (prefs.framePacing) {
+            case PreferenceConfiguration.FRAME_PACING_MIN_LATENCY:
+                profileName = R.string.demo_profile_fast;
+                break;
+            case PreferenceConfiguration.FRAME_PACING_MAX_SMOOTHNESS:
+                profileName = R.string.demo_profile_quality;
+                break;
+            default:
+                profileName = R.string.demo_profile_balanced;
+                break;
+        }
+
         demoHeroTitle.setText(app.app.getAppName());
         demoHeroMeta.setText(getString(R.string.demo_hero_profile_format,
-                prefs.width, prefs.height, prefs.fps, prefs.bitrate / 1000.0f));
+                prefs.width, prefs.height, prefs.fps, prefs.bitrate / 1000.0f,
+                getString(profileName)));
 
         boolean running = app.isRunning || lastRunningAppId == app.app.getAppId();
         demoHeroAction.setText(running ?
