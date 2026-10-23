@@ -48,7 +48,7 @@
         android:clickable="true"
         android:focusable="false"
         android:gravity="center"
-        android:minWidth="110dp"
+        android:minWidth="104dp"
         android:paddingStart="18dp"
         android:paddingEnd="18dp"
         android:text="@string/demo_exit_button"
