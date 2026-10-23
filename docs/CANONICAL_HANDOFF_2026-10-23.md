@@ -423,3 +423,40 @@ Only recreate a short-lived GPU worker after the physical client/controller gate
 ## Continuation prompt
 
 > Continue the Cloud Gaming client from `docs/CANONICAL_HANDOFF_2026-10-23.md` in `atifbukhari/Cloud-Gaming-Client`. Work on `demo-client-v1`; preserve `demo-client-v1-e2e-green-2026-10-23` as the immutable rollback checkpoint. The custom 12.2-demo2 baseline was proven end-to-end locally against Sunshine on Windows, including pairing, SuperTuxKart streaming, structured telemetry, Disconnect, Resume and End Game. The 12.3-demo1 code is now merged and CI-green with a controller-friendly in-stream Game Menu, game-first catalogue hero, in-stream TV phone-controller QR, functional hero Play/Resume, and per-game Auto/Fast/Balanced/Quality profiles where Auto preserves existing Moonlight behavior and the other profiles only map to existing frame-pacing modes. Do not rewrite the proven Moonlight streaming core. The next gate is physical Android validation of the 12.3 features and hardware decoder/Wi-Fi behavior. Keep advanced Starwire/Moonlight-X/Artemide renderer/decoder changes isolated in `perf-lab-v1` and promote only from measured telemetry. Do not start paid AWS GPU compute until the physical Android/client-controller gates are ready.
+
+## Canonical status refresh — 2026-10-23 08:52 PKT
+
+The 12.3 product iteration has advanced beyond the original 12.2 rollback baseline.
+
+### Current authoritative development state
+- branch: `demo-client-v1`;
+- 12.3-demo2 packaging commit: `e86a72305a8e54897f19869e3315f1a3d0cbfd70`;
+- versionName: `12.3-demo2`;
+- versionCode: `317`;
+- GitHub Actions run: `39895824937`;
+- run conclusion: **SUCCESS**;
+- `demo-client-v1-e2e-green-2026-10-23` remains the immutable pre-12.3 rollback branch.
+
+### 12.3 features now present
+- game-first selected-game hero;
+- functional hero Play/Resume;
+- per-game Auto/Fast/Balanced/Quality profile selection;
+- controller-friendly in-stream Game Menu;
+- performance overlay toggle from the in-stream menu;
+- in-stream phone-controller QR without stopping the active Game activity;
+- proven Disconnect/Resume/End Game lifecycle retained underneath;
+- structured local telemetry retained.
+
+### Starwire / Moonlight-X direction
+Starwire and the cited Moonlight forks remain **selective upstream references**, not a replacement upstream. Product-safe UX and existing-Moonlight-setting improvements may land on `demo-client-v1`; decoder/rendering/pacing experiments remain isolated in `perf-lab-v1` until physical-device telemetry proves a benefit.
+
+### Immediate continuation gate
+1. Keep `12.3-demo2` client behavior stable.
+2. Validate on a physical Android device using a hardware decoder and real Wi-Fi.
+3. Validate in-stream phone-controller QR/input while the stream remains connected.
+4. Record structured baseline telemetry for Auto/Fast/Balanced/Quality.
+5. Only after the physical baseline, begin measured `perf-lab-v1` experiments for Fast V-Sync/LFR/async/vendor low-latency paths.
+6. Do not restart paid AWS GPU compute solely for client-side work.
+
+### UI defect corrected after review
+The 12.3 hero profile chip had a RelativeLayout self-reference (`layout_toStartOf="@id/demoHeroProfile"`). It is now constrained to the hero action instead. This is a layout-only correction and does not touch streaming, pairing, decoding, or input logic.
