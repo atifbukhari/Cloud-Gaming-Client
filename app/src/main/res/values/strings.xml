@@ -321,6 +321,9 @@
     <string name="demo_game_menu_resume">Resume game</string>
     <string name="demo_game_menu_show_stats">Show performance</string>
     <string name="demo_game_menu_hide_stats">Hide performance</string>
+    <string name="demo_game_menu_phone_controller">Phone controller</string>
+    <string name="demo_game_controller_dialog_title">Use phone as controller</string>
+    <string name="demo_game_controller_dialog_help">Scan with a phone on the same Wi-Fi. Keep this game open; controls connect directly to this TV.</string>
     <string name="demo_hero_title_default">Choose a game</string>
     <string name="demo_hero_meta_default">Focus a game to preview the stream profile.</string>
     <string name="demo_hero_action_play">Play</string>
