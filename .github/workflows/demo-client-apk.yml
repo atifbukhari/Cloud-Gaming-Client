@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - demo-client-v1
+      - ci-single-job-apk
     paths:
       - "app/**"
       - "gradle/**"
