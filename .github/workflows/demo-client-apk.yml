@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - demo-client-v1
-      - feature-12-3-per-game-profiles
     paths:
       - "app/**"
       - "gradle/**"
