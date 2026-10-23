@@ -287,6 +287,94 @@ Install `12.2-demo2` or the next green APK on a physical Android phone/tablet an
 ### Priority E — performance lab
 After physical baseline metrics exist, test renderer/pacing/async variants and compare structured telemetry.
 
+## 12.3 progress completed after this handoff was created
+
+The first Starwire-informed product iteration has now been implemented without replacing the proven Moonlight streaming core.
+
+### 12.3-demo1 version
+- versionName: `12.3-demo1`
+- versionCode: `317`
+
+### In-stream game menu
+Implemented on `demo-client-v1`:
+- top-right demo affordance renamed from **Exit** to **Menu**;
+- Android Back during a stream opens the same game menu;
+- Resume game;
+- Show/Hide performance overlay;
+- Disconnect;
+- End Game;
+- menu interactions emit structured demo telemetry.
+
+The already-proven Disconnect and host-side End Game logic remains underneath unchanged.
+
+CI checkpoint:
+- run 17: SUCCESS
+- workflow run id: `39892749869`
+- APK artifact id: `12475806842`
+- artifact digest: `sha256:13e9ea902674e6c47e69230c814366454d7e1497a0d35ecea90d13045015045d`
+
+### Game-first catalogue hero
+Implemented on `demo-client-v1`:
+- focused/selected game drives a hero information area;
+- game title;
+- Play/Resume state indicator;
+- resolution/FPS/bitrate summary;
+- stream-mode label derived from the actual existing frame-pacing preference;
+- TV D-pad focus updates the hero;
+- `game_focused` telemetry.
+
+Current product labels:
+- minimum-latency frame pacing -> **Fast**;
+- maximum-smoothness frame pacing -> **Quality**;
+- other current modes -> **Balanced**.
+
+The hero action is currently informational; card selection remains the proven launch path. Do not remove the existing card launch path until the hero action has its own runtime validation.
+
+CI checkpoints:
+- run 21: SUCCESS, hero preview
+  - workflow run id: `39893276022`
+  - artifact id: `12476060800`
+  - artifact digest: `sha256:64a04700e10b28a90d2e704aa269bc9b538a31589dd5bdb9bcbb1b8fb4b269b3`
+- run 23: SUCCESS, corrected real profile label
+  - workflow run id: `39893635659`
+  - build commit: `a11665236baf6de2a573c510219261468b1a10d6`
+  - artifact id: `12476186135`
+  - artifact digest: `sha256:a24fc282292f73bf46e3a4028580a6eea8f1647129d7c09608a59b0b475f9dab`
+
+### Phone controller inside the active stream
+Implemented and merged through PR #1.
+
+Design requirement: do **not** launch `DemoControllerActivity` while streaming because `Game.onStop()` stops the active connection. The new path instead presents the QR as an `AlertDialog` inside the existing `Game` activity.
+
+Implementation:
+- shared `DemoQrCode` renderer;
+- in-stream Phone controller action on Android TV / Leanback;
+- controller QR dialog remains inside the active Game activity;
+- reuses the existing tokenized LAN `DemoControllerServer`;
+- reuses the active `Game` input listener set on `connectionStarted()`;
+- no protocol, native decoder, or Moonlight core changes.
+
+Feature-branch CI:
+- run 24: SUCCESS
+- workflow run id: `39894128881`
+- tested app commit: `8a63a88b8d1eb73091b086ecc7c12325f1e07a43`
+- APK artifact id: `12476107142`
+- artifact digest: `sha256:ae19da40909326f76a0d46e9d99cb002afdb4a7c8c34d8b6eb11625937f4f233`
+- PR #1 squash merge commit on `demo-client-v1`: `6c2bfaed45d2ebd484debf8e18732741353cad69`
+
+### Repository support added
+- canonical rollback branch: `demo-client-v1-e2e-green-2026-10-23`;
+- performance experiment branch: `perf-lab-v1`;
+- `docs/PERF_LAB_V1.md`;
+- `docs/UPSTREAM_FEATURE_REFERENCES.md`;
+- Colab backup builder: `tools/Cloud_Gaming_Android_Builder.ipynb`;
+- README points to this canonical handoff.
+
+### Current next product slice
+The next safe main-branch work is **simple per-game profiles** (Auto / Fast / Balanced / Quality), using the current Moonlight preferences and preserving Auto as a no-change default. Moonlight X's `AppPreferences` and `AppStreamSettings` are useful implementation references, but the Cloud Gaming product should expose a much smaller operator/consumer-facing surface.
+
+Advanced renderer/decoder work remains isolated in `perf-lab-v1` until physical Android baseline measurements exist.
+
 ## AWS guardrail
 
 Do not restart paid AWS GPU infrastructure solely for client/UI work.
