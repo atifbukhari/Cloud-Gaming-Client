@@ -73,6 +73,10 @@ public class AppView extends Activity implements AdapterFragmentCallbacks {
     private boolean showHiddenApps;
     private HashSet<Integer> hiddenAppIds = new HashSet<>();
     private AdView demoBannerAd;
+    private TextView demoHeroTitle;
+    private TextView demoHeroMeta;
+    private TextView demoHeroAction;
+    private AppObject demoHeroApp;
 
     private final static int START_OR_RESUME_ID = 1;
     private final static int QUIT_ID = 2;
@@ -323,9 +327,16 @@ public class AppView extends Activity implements AdapterFragmentCallbacks {
 
         TextView label = findViewById(R.id.appListText);
         TextView controllerCta = findViewById(R.id.demoControllerCta);
+        View demoHero = findViewById(R.id.demoHero);
+        demoHeroTitle = findViewById(R.id.demoHeroTitle);
+        demoHeroMeta = findViewById(R.id.demoHeroMeta);
+        demoHeroAction = findViewById(R.id.demoHeroAction);
+
         if (BuildConfig.DEMO_MODE) {
             setTitle(getString(R.string.demo_catalogue_title));
             label.setText(R.string.demo_catalogue_tagline);
+            demoHero.setVisibility(View.VISIBLE);
+            updateDemoHero(null);
 
             boolean isTv = getPackageManager().hasSystemFeature(PackageManager.FEATURE_LEANBACK);
             if (isTv) {
@@ -354,11 +365,42 @@ public class AppView extends Activity implements AdapterFragmentCallbacks {
             label.setText(computerName);
             findViewById(R.id.adContainer).setVisibility(View.GONE);
             controllerCta.setVisibility(View.GONE);
+            demoHero.setVisibility(View.GONE);
         }
 
         // Bind to the computer manager service
         bindService(new Intent(this, ComputerManagerService.class), serviceConnection,
                 Service.BIND_AUTO_CREATE);
+    }
+
+    private void updateDemoHero(AppObject app) {
+        if (!BuildConfig.DEMO_MODE || demoHeroTitle == null ||
+                demoHeroMeta == null || demoHeroAction == null) {
+            return;
+        }
+
+        demoHeroApp = app;
+        if (app == null) {
+            demoHeroTitle.setText(R.string.demo_hero_title_default);
+            demoHeroMeta.setText(R.string.demo_hero_meta_default);
+            demoHeroAction.setText(R.string.demo_hero_action_play);
+            return;
+        }
+
+        PreferenceConfiguration prefs = PreferenceConfiguration.readPreferences(this);
+        demoHeroTitle.setText(app.app.getAppName());
+        demoHeroMeta.setText(getString(R.string.demo_hero_profile_format,
+                prefs.width, prefs.height, prefs.fps, prefs.bitrate / 1000.0f));
+
+        boolean running = app.isRunning || lastRunningAppId == app.app.getAppId();
+        demoHeroAction.setText(running ?
+                R.string.demo_hero_action_resume : R.string.demo_hero_action_play);
+    }
+
+    private void refreshDemoHero() {
+        if (BuildConfig.DEMO_MODE) {
+            updateDemoHero(demoHeroApp);
+        }
     }
 
     private void updateHiddenApps(boolean hideImmediately) {
@@ -584,6 +626,7 @@ public class AppView extends Activity implements AdapterFragmentCallbacks {
                     if (existingApp.isRunning &&
                             existingApp.app.getAppId() == details.runningGameId) {
                         // This app was running and still is, so we're done now
+                        refreshDemoHero();
                         return;
                     }
                     else if (existingApp.app.getAppId() == details.runningGameId) {
@@ -604,6 +647,7 @@ public class AppView extends Activity implements AdapterFragmentCallbacks {
                 if (updated) {
                     appGridAdapter.notifyDataSetChanged();
                 }
+                refreshDemoHero();
             }
         });
     }
@@ -678,6 +722,14 @@ public class AppView extends Activity implements AdapterFragmentCallbacks {
                 if (updated) {
                     appGridAdapter.notifyDataSetChanged();
                 }
+
+                if (BuildConfig.DEMO_MODE) {
+                    if (demoHeroApp == null && appGridAdapter.getCount() > 0) {
+                        updateDemoHero((AppObject) appGridAdapter.getItem(0));
+                    } else {
+                        refreshDemoHero();
+                    }
+                }
             }
         });
     }
@@ -708,8 +760,30 @@ public class AppView extends Activity implements AdapterFragmentCallbacks {
                 }
             }
         });
+        listView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (BuildConfig.DEMO_MODE && position >= 0 &&
+                        position < appGridAdapter.getCount()) {
+                    AppObject app = (AppObject) appGridAdapter.getItem(position);
+                    if (demoHeroApp == null ||
+                            demoHeroApp.app.getAppId() != app.app.getAppId()) {
+                        updateDemoHero(app);
+                        DemoTelemetry.event(AppView.this, "game_focused", app.app.getAppName());
+                    }
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
         UiHelper.applyStatusBarPadding(listView);
         registerForContextMenu(listView);
+        if (BuildConfig.DEMO_MODE && appGridAdapter.getCount() > 0) {
+            listView.setSelection(0);
+            updateDemoHero((AppObject) appGridAdapter.getItem(0));
+        }
         listView.requestFocus();
     }
 
