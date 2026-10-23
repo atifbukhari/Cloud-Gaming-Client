@@ -284,12 +284,12 @@ public class Game extends Activity implements SurfaceHolder.Callback,
 
         performanceOverlayView = findViewById(R.id.performanceOverlay);
 
-        View endSessionButton = findViewById(R.id.demoEndSessionButton);
+        View gameMenuButton = findViewById(R.id.demoEndSessionButton);
         if (BuildConfig.DEMO_MODE) {
-            endSessionButton.setVisibility(View.VISIBLE);
-            endSessionButton.setOnClickListener(v -> showEndSessionDialog());
+            gameMenuButton.setVisibility(View.VISIBLE);
+            gameMenuButton.setOnClickListener(v -> showGameMenu());
         } else {
-            endSessionButton.setVisibility(View.GONE);
+            gameMenuButton.setVisibility(View.GONE);
         }
 
         inputCaptureProvider = InputCaptureManager.getInputCaptureProvider(this, this);
@@ -1203,27 +1203,64 @@ public class Game extends Activity implements SurfaceHolder.Callback,
     @Override
     public void onBackPressed() {
         if (BuildConfig.DEMO_MODE && (connecting || connected)) {
-            showEndSessionDialog();
+            showGameMenu();
         } else {
             super.onBackPressed();
         }
     }
 
-    private void showEndSessionDialog() {
+    private void showGameMenu() {
         if (isFinishing()) {
             return;
         }
 
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.demo_end_session_title)
-                .setMessage(R.string.demo_end_session_message)
-                .setPositiveButton(R.string.demo_end_game, (dialog, which) -> endRemoteSessionAndExit())
-                .setNeutralButton(R.string.demo_disconnect_only, (dialog, which) -> {
-                    DemoTelemetry.event(this, "user_exit_requested", "disconnect_only");
-                    finish();
+        final boolean statsVisible = performanceOverlayView != null &&
+                performanceOverlayView.getVisibility() == View.VISIBLE;
+
+        CharSequence[] items = new CharSequence[] {
+                getString(R.string.demo_game_menu_resume),
+                getString(statsVisible ? R.string.demo_game_menu_hide_stats :
+                        R.string.demo_game_menu_show_stats),
+                getString(R.string.demo_disconnect_only),
+                getString(R.string.demo_end_game)
+        };
+
+        DemoTelemetry.event(this, "game_menu_opened",
+                appName != null ? appName : "unknown");
+
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle(appName != null ?
+                        getString(R.string.demo_game_menu_title) + " · " + appName :
+                        getString(R.string.demo_game_menu_title))
+                .setItems(items, (menuDialog, which) -> {
+                    switch (which) {
+                        case 0:
+                            DemoTelemetry.event(this, "game_menu_action", "resume");
+                            break;
+                        case 1:
+                            boolean showStats = !statsVisible;
+                            performanceOverlayView.setVisibility(showStats ? View.VISIBLE : View.GONE);
+                            DemoTelemetry.event(this, "performance_overlay",
+                                    showStats ? "shown" : "hidden");
+                            break;
+                        case 2:
+                            DemoTelemetry.event(this, "user_exit_requested", "disconnect_only");
+                            finish();
+                            break;
+                        case 3:
+                            endRemoteSessionAndExit();
+                            break;
+                        default:
+                            break;
+                    }
                 })
                 .setNegativeButton(android.R.string.cancel, null)
-                .show();
+                .create();
+
+        dialog.setOnShowListener(ignored ->
+                DemoTelemetry.event(this, "game_menu_visible",
+                        statsVisible ? "stats_visible" : "stats_hidden"));
+        dialog.show();
     }
 
     private void endRemoteSessionAndExit() {
