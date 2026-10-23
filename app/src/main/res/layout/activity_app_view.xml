@@ -69,6 +69,64 @@
         android:textStyle="bold"
         android:visibility="gone" />
 
+    <RelativeLayout
+        android:id="@+id/demoHero"
+        android:layout_width="match_parent"
+        android:layout_height="96dp"
+        android:layout_below="@id/appListText"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/demo_hero_background"
+        android:paddingStart="20dp"
+        android:paddingEnd="18dp"
+        android:paddingTop="14dp"
+        android:paddingBottom="14dp"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/demoHeroTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_toStartOf="@id/demoHeroAction"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="@string/demo_hero_title_default"
+            android:textColor="#FFFFFFFF"
+            android:textSize="23sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/demoHeroMeta"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/demoHeroTitle"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="5dp"
+            android:layout_toStartOf="@id/demoHeroAction"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="@string/demo_hero_meta_default"
+            android:textColor="#AFC0D9"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/demoHeroAction"
+            android:layout_width="112dp"
+            android:layout_height="44dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/demo_controller_cta_background"
+            android:gravity="center"
+            android:text="@string/demo_hero_action_play"
+            android:textAllCaps="true"
+            android:textColor="#FFFFFFFF"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
     <FrameLayout
         android:id="@+id/adContainer"
         android:layout_width="match_parent"
@@ -89,7 +147,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/adContainer"
-        android:layout_below="@id/appListText"
+        android:layout_below="@id/demoHero"
         android:gravity="center" />
 
 </RelativeLayout>
