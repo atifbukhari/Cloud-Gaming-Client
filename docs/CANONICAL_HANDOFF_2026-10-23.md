@@ -460,3 +460,11 @@ Starwire and the cited Moonlight forks remain **selective upstream references**,
 
 ### UI defect corrected after review
 The 12.3 hero profile chip had a RelativeLayout self-reference (`layout_toStartOf="@id/demoHeroProfile"`). It is now constrained to the hero action instead. This is a layout-only correction and does not touch streaming, pairing, decoding, or input logic.
+
+### Continuation update — physical gate tooling and layout preflight
+- TV hero profile chip RelativeLayout self-reference fixed in commit `ae7e58a3169c7559973893c68792a0985306078c`.
+- GitHub Actions preflight run `39897525826`: **SUCCESS**.
+- Added `tools/validate-android-device.ps1` to identify an authorized physical device, check host/device clock skew, optionally install/launch the APK, and capture device/codec/logcat baselines.
+- Added `docs/PHYSICAL_ANDROID_VALIDATION.md` as the acceptance gate for physical hardware, phone-controller validation, per-profile telemetry, and later `perf-lab-v1` promotion.
+
+The current product branch remains stable; these changes do not alter Moonlight protocol, decoder, input, or Sunshine session logic.
