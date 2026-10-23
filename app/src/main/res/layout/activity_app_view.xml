@@ -90,7 +90,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_toStartOf="@id/demoHeroProfile"
+            android:layout_toStartOf="@id/demoHeroAction"
             android:ellipsize="end"
             android:maxLines="1"
             android:text="@string/demo_hero_title_default"
