@@ -38,6 +38,7 @@ import com.limelight.utils.SpinnerDialog;
 import com.limelight.utils.UiHelper;
 import com.limelight.demo.DemoTelemetry;
 import com.limelight.demo.DemoControllerServer;
+import com.limelight.demo.DemoQrCode;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
@@ -79,6 +80,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -1216,14 +1218,28 @@ public class Game extends Activity implements SurfaceHolder.Callback,
 
         final boolean statsVisible = performanceOverlayView != null &&
                 performanceOverlayView.getVisibility() == View.VISIBLE;
+        final boolean offerPhoneController =
+                getPackageManager().hasSystemFeature(PackageManager.FEATURE_LEANBACK);
 
-        CharSequence[] items = new CharSequence[] {
-                getString(R.string.demo_game_menu_resume),
-                getString(statsVisible ? R.string.demo_game_menu_hide_stats :
-                        R.string.demo_game_menu_show_stats),
-                getString(R.string.demo_disconnect_only),
-                getString(R.string.demo_end_game)
-        };
+        CharSequence[] items;
+        if (offerPhoneController) {
+            items = new CharSequence[] {
+                    getString(R.string.demo_game_menu_resume),
+                    getString(statsVisible ? R.string.demo_game_menu_hide_stats :
+                            R.string.demo_game_menu_show_stats),
+                    getString(R.string.demo_game_menu_phone_controller),
+                    getString(R.string.demo_disconnect_only),
+                    getString(R.string.demo_end_game)
+            };
+        } else {
+            items = new CharSequence[] {
+                    getString(R.string.demo_game_menu_resume),
+                    getString(statsVisible ? R.string.demo_game_menu_hide_stats :
+                            R.string.demo_game_menu_show_stats),
+                    getString(R.string.demo_disconnect_only),
+                    getString(R.string.demo_end_game)
+            };
+        }
 
         DemoTelemetry.event(this, "game_menu_opened",
                 appName != null ? appName : "unknown");
@@ -1233,25 +1249,24 @@ public class Game extends Activity implements SurfaceHolder.Callback,
                         getString(R.string.demo_game_menu_title) + " · " + appName :
                         getString(R.string.demo_game_menu_title))
                 .setItems(items, (menuDialog, which) -> {
-                    switch (which) {
-                        case 0:
-                            DemoTelemetry.event(this, "game_menu_action", "resume");
-                            break;
-                        case 1:
-                            boolean showStats = !statsVisible;
-                            performanceOverlayView.setVisibility(showStats ? View.VISIBLE : View.GONE);
-                            DemoTelemetry.event(this, "performance_overlay",
-                                    showStats ? "shown" : "hidden");
-                            break;
-                        case 2:
-                            DemoTelemetry.event(this, "user_exit_requested", "disconnect_only");
-                            finish();
-                            break;
-                        case 3:
-                            endRemoteSessionAndExit();
-                            break;
-                        default:
-                            break;
+                    if (which == 0) {
+                        DemoTelemetry.event(this, "game_menu_action", "resume");
+                    }
+                    else if (which == 1) {
+                        boolean showStats = !statsVisible;
+                        performanceOverlayView.setVisibility(showStats ? View.VISIBLE : View.GONE);
+                        DemoTelemetry.event(this, "performance_overlay",
+                                showStats ? "shown" : "hidden");
+                    }
+                    else if (offerPhoneController && which == 2) {
+                        showPhoneControllerDialog();
+                    }
+                    else if (which == (offerPhoneController ? 3 : 2)) {
+                        DemoTelemetry.event(this, "user_exit_requested", "disconnect_only");
+                        finish();
+                    }
+                    else if (which == (offerPhoneController ? 4 : 3)) {
+                        endRemoteSessionAndExit();
                     }
                 })
                 .setNegativeButton(android.R.string.cancel, null)
@@ -1261,6 +1276,42 @@ public class Game extends Activity implements SurfaceHolder.Callback,
                 DemoTelemetry.event(this, "game_menu_visible",
                         statsVisible ? "stats_visible" : "stats_hidden"));
         dialog.show();
+    }
+
+    private void showPhoneControllerDialog() {
+        DemoControllerServer server =
+                DemoControllerServer.ensureStarted(getApplicationContext());
+        String url = server.getPairingUrl();
+
+        View controllerView = getLayoutInflater().inflate(
+                R.layout.dialog_demo_phone_controller, null);
+        ImageView qr = controllerView.findViewById(R.id.demoGameControllerQr);
+        TextView help = controllerView.findViewById(R.id.demoGameControllerHelp);
+        TextView urlText = controllerView.findViewById(R.id.demoGameControllerUrl);
+
+        if (url == null) {
+            qr.setVisibility(View.GONE);
+            urlText.setText("");
+            help.setText(R.string.demo_controller_unavailable);
+            DemoTelemetry.event(this, "phone_controller_qr_failed", "no_lan_address");
+        } else {
+            android.graphics.Bitmap bitmap = DemoQrCode.create(url, 700);
+            if (bitmap != null) {
+                qr.setImageBitmap(bitmap);
+                urlText.setText(url);
+                DemoTelemetry.event(this, "phone_controller_qr_opened", "in_stream");
+            } else {
+                qr.setVisibility(View.GONE);
+                urlText.setText(url);
+                DemoTelemetry.event(this, "phone_controller_qr_failed", "render");
+            }
+        }
+
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.demo_game_controller_dialog_title)
+                .setView(controllerView)
+                .setPositiveButton(android.R.string.ok, null)
+                .show();
     }
 
     private void endRemoteSessionAndExit() {
