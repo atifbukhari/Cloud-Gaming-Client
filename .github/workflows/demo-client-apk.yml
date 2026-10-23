@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - demo-client-v1
-      - feature-12-3-phone-controller-menu
     paths:
       - "app/**"
       - "gradle/**"
