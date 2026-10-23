@@ -25,12 +25,14 @@ import com.limelight.demo.DemoTelemetry;
 import com.limelight.demo.DemoTelemetryActivity;
 import com.limelight.demo.DemoControllerActivity;
 import com.limelight.demo.DemoControllerServer;
+import com.limelight.demo.DemoStreamProfile;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Service;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -75,6 +77,7 @@ public class AppView extends Activity implements AdapterFragmentCallbacks {
     private AdView demoBannerAd;
     private TextView demoHeroTitle;
     private TextView demoHeroMeta;
+    private TextView demoHeroProfile;
     private TextView demoHeroAction;
     private AppObject demoHeroApp;
 
@@ -330,6 +333,7 @@ public class AppView extends Activity implements AdapterFragmentCallbacks {
         View demoHero = findViewById(R.id.demoHero);
         demoHeroTitle = findViewById(R.id.demoHeroTitle);
         demoHeroMeta = findViewById(R.id.demoHeroMeta);
+        demoHeroProfile = findViewById(R.id.demoHeroProfile);
         demoHeroAction = findViewById(R.id.demoHeroAction);
 
         if (BuildConfig.DEMO_MODE) {
@@ -337,6 +341,8 @@ public class AppView extends Activity implements AdapterFragmentCallbacks {
             label.setText(R.string.demo_catalogue_tagline);
             demoHero.setVisibility(View.VISIBLE);
             updateDemoHero(null);
+            demoHeroProfile.setOnClickListener(v -> showDemoProfilePicker());
+            demoHeroAction.setOnClickListener(v -> launchDemoHeroApp());
 
             boolean isTv = getPackageManager().hasSystemFeature(PackageManager.FEATURE_LEANBACK);
             if (isTv) {
@@ -375,7 +381,8 @@ public class AppView extends Activity implements AdapterFragmentCallbacks {
 
     private void updateDemoHero(AppObject app) {
         if (!BuildConfig.DEMO_MODE || demoHeroTitle == null ||
-                demoHeroMeta == null || demoHeroAction == null) {
+                demoHeroMeta == null || demoHeroProfile == null ||
+                demoHeroAction == null) {
             return;
         }
 
@@ -383,32 +390,90 @@ public class AppView extends Activity implements AdapterFragmentCallbacks {
         if (app == null) {
             demoHeroTitle.setText(R.string.demo_hero_title_default);
             demoHeroMeta.setText(R.string.demo_hero_meta_default);
+            demoHeroProfile.setText(R.string.demo_profile_auto);
             demoHeroAction.setText(R.string.demo_hero_action_play);
             return;
         }
 
-        PreferenceConfiguration prefs = PreferenceConfiguration.readPreferences(this);
-        int profileName;
-        switch (prefs.framePacing) {
-            case PreferenceConfiguration.FRAME_PACING_MIN_LATENCY:
-                profileName = R.string.demo_profile_fast;
-                break;
-            case PreferenceConfiguration.FRAME_PACING_MAX_SMOOTHNESS:
-                profileName = R.string.demo_profile_quality;
-                break;
-            default:
-                profileName = R.string.demo_profile_balanced;
-                break;
-        }
+        PreferenceConfiguration effectivePrefs =
+                PreferenceConfiguration.readPreferences(this);
+        String selectedProfile = DemoStreamProfile.get(
+                this, uuidString, app.app.getAppId());
+        DemoStreamProfile.apply(
+                this, uuidString, app.app.getAppId(), effectivePrefs);
 
         demoHeroTitle.setText(app.app.getAppName());
         demoHeroMeta.setText(getString(R.string.demo_hero_profile_format,
-                prefs.width, prefs.height, prefs.fps, prefs.bitrate / 1000.0f,
-                getString(profileName)));
+                effectivePrefs.width, effectivePrefs.height, effectivePrefs.fps,
+                effectivePrefs.bitrate / 1000.0f,
+                getString(DemoStreamProfile.effectiveLabelRes(
+                        selectedProfile, effectivePrefs))));
+        demoHeroProfile.setText(DemoStreamProfile.labelRes(selectedProfile));
 
         boolean running = app.isRunning || lastRunningAppId == app.app.getAppId();
         demoHeroAction.setText(running ?
                 R.string.demo_hero_action_resume : R.string.demo_hero_action_play);
+    }
+
+    private void launchDemoHeroApp() {
+        if (demoHeroApp == null || managerBinder == null || computer == null) {
+            return;
+        }
+
+        final AppObject selected = demoHeroApp;
+        DemoTelemetry.event(this, "game_selected", selected.app.getAppName());
+
+        if (lastRunningAppId != 0 &&
+                lastRunningAppId != selected.app.getAppId()) {
+            UiHelper.displayQuitConfirmationDialog(this, new Runnable() {
+                @Override
+                public void run() {
+                    ServerHelper.doStart(AppView.this, selected.app,
+                            computer, managerBinder);
+                }
+            }, null);
+        } else {
+            ServerHelper.doStart(this, selected.app, computer, managerBinder);
+        }
+    }
+
+    private void showDemoProfilePicker() {
+        if (demoHeroApp == null) {
+            return;
+        }
+
+        final String[] values = DemoStreamProfile.values();
+        CharSequence[] labels = new CharSequence[values.length];
+        int checked = 0;
+        String current = DemoStreamProfile.get(
+                this, uuidString, demoHeroApp.app.getAppId());
+
+        for (int i = 0; i < values.length; i++) {
+            labels[i] = getString(DemoStreamProfile.labelRes(values[i]));
+            if (values[i].equals(current)) {
+                checked = i;
+            }
+        }
+
+        final AppObject selected = demoHeroApp;
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.demo_profile_picker_title)
+                .setSingleChoiceItems(labels, checked, (dialog, which) -> {
+                    if (which < 0 || which >= values.length) {
+                        return;
+                    }
+
+                    String profile = values[which];
+                    DemoStreamProfile.set(AppView.this, uuidString,
+                            selected.app.getAppId(), profile);
+                    DemoTelemetry.event(AppView.this,
+                            "stream_profile_selected",
+                            selected.app.getAppName() + ":" + profile);
+                    updateDemoHero(selected);
+                    dialog.dismiss();
+                })
+                .setNegativeButton(android.R.string.cancel, null)
+                .show();
     }
 
     private void refreshDemoHero() {
