@@ -1,3 +1,5 @@
+> **Cloud Gaming demo fork:** active product work is on `demo-client-v1`. The canonical continuation point is [`docs/CANONICAL_HANDOFF_2026-10-23.md`](docs/CANONICAL_HANDOFF_2026-10-23.md). Preserve `demo-client-v1-e2e-green-2026-10-23` as the known-good local E2E rollback checkpoint. Advanced renderer/decoder experiments belong on `perf-lab-v1`.
+
 # Moonlight Android
 
 [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/232a8tadrrn8jv0k/branch/master?svg=true)](https://ci.appveyor.com/project/cgutman/moonlight-android/branch/master)
