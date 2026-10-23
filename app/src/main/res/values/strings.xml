@@ -316,7 +316,11 @@
     <string name="demo_controller_subtitle">Scan this QR code with a phone on the same Wi-Fi network. No app install required.</string>
     <string name="demo_controller_waiting">Controls become active automatically when a game starts.</string>
     <string name="demo_controller_unavailable">Connect this TV to a local network to enable phone pairing.</string>
-    <string name="demo_exit_button">Exit</string>
+    <string name="demo_exit_button">Menu</string>
+    <string name="demo_game_menu_title">Game menu</string>
+    <string name="demo_game_menu_resume">Resume game</string>
+    <string name="demo_game_menu_show_stats">Show performance</string>
+    <string name="demo_game_menu_hide_stats">Hide performance</string>
     <string name="demo_end_session_title">Leave game?</string>
     <string name="demo_end_session_message">Disconnect from the stream, or end the game on the cloud host and return to the catalogue.</string>
     <string name="demo_disconnect_only">Disconnect</string>
