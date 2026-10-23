@@ -362,6 +362,36 @@ Feature-branch CI:
 - artifact digest: `sha256:ae19da40909326f76a0d46e9d99cb002afdb4a7c8c34d8b6eb11625937f4f233`
 - PR #1 squash merge commit on `demo-client-v1`: `6c2bfaed45d2ebd484debf8e18732741353cad69`
 
+### Per-game stream profiles and hero launch
+
+Implemented and merged through PR #2.
+
+Profiles are stored per Sunshine computer UUID + app ID:
+- **Auto** — preserves the existing Moonlight preferences unchanged;
+- **Fast** — maps only to the existing minimum-latency frame-pacing mode;
+- **Balanced** — maps only to the existing balanced frame-pacing mode;
+- **Quality** — maps only to the existing maximum-smoothness frame-pacing mode.
+
+The initial profile layer deliberately does **not** change codec, resolution, FPS, bitrate, HDR, vendor decoder flags, Vulkan/direct rendering, PyroWave, or native protocol code.
+
+Catalogue updates:
+- focused game hero shows the selected profile and effective stream summary;
+- profile chip opens an Auto/Fast/Balanced/Quality chooser;
+- hero Play/Resume control now launches/resumes the focused game;
+- existing card launch remains available as a fallback;
+- `stream_profile_selected` and `stream_profile_applied` telemetry added.
+
+Documentation:
+- `docs/STREAM_PROFILES.md`
+
+Feature-branch CI:
+- run 26: SUCCESS
+- workflow run id: `39894836154`
+- tested app commit: `2cc435e20b81345ce623262cbc75d546b3537714`
+- APK artifact id: `12475883400`
+- artifact digest: `sha256:8f28b0df9bbb24f37aa22a078ee3a11937a7a29b44ba19b99ef5517f9bdcbb38`
+- PR #2 squash merge commit on `demo-client-v1`: `1f37f20486c78f596c27453cd63ec227bf192709`
+
 ### Repository support added
 - canonical rollback branch: `demo-client-v1-e2e-green-2026-10-23`;
 - performance experiment branch: `perf-lab-v1`;
@@ -371,9 +401,16 @@ Feature-branch CI:
 - README points to this canonical handoff.
 
 ### Current next product slice
-The next safe main-branch work is **simple per-game profiles** (Auto / Fast / Balanced / Quality), using the current Moonlight preferences and preserving Auto as a no-change default. Moonlight X's `AppPreferences` and `AppStreamSettings` are useful implementation references, but the Cloud Gaming product should expose a much smaller operator/consumer-facing surface.
+The next gate is **physical Android validation of 12.3**:
+- hardware decoder path;
+- Wi-Fi stream stability;
+- hero Play/Resume;
+- per-game profile selection;
+- in-stream Phone controller QR;
+- phone controller input while the game remains connected;
+- Disconnect / Resume / End Game regression.
 
-Advanced renderer/decoder work remains isolated in `perf-lab-v1` until physical Android baseline measurements exist.
+After the physical baseline, use `perf-lab-v1` for measured decoder/pacing experiments. Advanced renderer/decoder work remains isolated there until telemetry supports promotion.
 
 ## AWS guardrail
 
