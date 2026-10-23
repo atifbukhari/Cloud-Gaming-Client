@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - demo-client-v1
+      - perf-lab-v1
     paths:
       - "app/**"
       - "gradle/**"
