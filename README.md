@@ -1,3 +1,5 @@
+> **Cloud Gaming Platform 2.0 — program plan (2026-10-26):** [Master architecture](docs/PLATFORM_MASTER_PLAN_2026-10-26.md) · [Delivery roadmap/WBS](docs/PLATFORM_DELIVERY_WBS_2026-10-26.md) · [Handover runbook](docs/PLATFORM_HANDOVER_RUNBOOK_2026-10-26.md) · [Decisions, risks & scope sources](docs/PLATFORM_DECISIONS_AND_SOURCES_2026-10-26.md). These are **review proposals** unless a gate is evidenced as passed; the dated client handoff below remains authoritative for actually verified Android E2E.
+
 > **Cloud Gaming demo fork:** active product work is on `demo-client-v1`. The canonical continuation point is [`docs/CANONICAL_HANDOFF_2026-10-23.md`](docs/CANONICAL_HANDOFF_2026-10-23.md). Preserve `demo-client-v1-e2e-green-2026-10-23` as the known-good local E2E rollback checkpoint. Advanced renderer/decoder experiments belong on `perf-lab-v1`.
 
 # Moonlight Android
