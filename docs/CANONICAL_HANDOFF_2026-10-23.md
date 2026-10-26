@@ -1,5 +1,8 @@
 # Cloud Gaming Client — Canonical Handoff (2026-10-23)
 
+> **Program-level architecture added 2026-10-26:** [Master platform plan](PLATFORM_MASTER_PLAN_2026-10-26.md), [work breakdown](PLATFORM_DELIVERY_WBS_2026-10-26.md), [continuation/handover runbook](PLATFORM_HANDOVER_RUNBOOK_2026-10-26.md), and [decision/source/risk ledger](PLATFORM_DECISIONS_AND_SOURCES_2026-10-26.md). These describe proposed future platform work. **This file remains the authoritative record of verified Android client implementation and local testing.** No change was made to the client runtime by publishing the platform plan.
+
+
 ## Authority and rollback point
 
 This document is the canonical continuation point for the Android/Android TV cloud-gaming client work as of 2026-10-23.
