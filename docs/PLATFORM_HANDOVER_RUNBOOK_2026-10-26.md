@@ -1,4 +1,6 @@
 # Cloud Gaming Platform 2.0 — Canonical Program Handover & Continuation Runbook
+> **2026-10-27 Chromebook opportunity / narrow MVP:** See [AI Skills Lab MVP and Live Demo](CHROMEBOOK_AI_SKILLS_LAB_MVP_2026-10-27.md). The government announced 500k refurbished Chromebooks with MiFi, but actual eligible devices, permissions, cost and buyer are unverified. Pilot a low-bandwidth browser Python lesson + constrained bilingual AI tutor + teacher reporting, not full gaming/GPU platform. This is proposal only; the original Moonlight client remains separate.
+
 
 > **2026-10-27 economic/technology refinement:** [Joint venture/co-investment + AV1 savings + Cloud AI Desktop architecture](SHARED_FUNDING_AV1_AI_DESKTOP_STRATEGY_2026-10-27.md). Prior gaming-only financial models are baseline scenarios, **not** the target product boundary or agreed partner split. GPU desktop, CPU workspace and AI inference have separate metering and licensing.
 
