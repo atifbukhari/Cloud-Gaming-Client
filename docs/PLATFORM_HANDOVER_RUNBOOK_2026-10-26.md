@@ -1,4 +1,7 @@
 # Cloud Gaming Platform 2.0 — Canonical Program Handover & Continuation Runbook
+
+> **ACTIVE MVP 2026-10-27:** [Gaming-first MVP and demonstration plan](GAMING_FIRST_MVP_AND_DEMO_2026-10-27.md) now takes priority over the Chromebook education concept below. Execute actual Android physical streaming → minimal one-host SessionOS → one remote gaming GPU → partner demo. AI desktop is a future resource class, CPU by default/GPU when needed. The Chromebook AI Skills Lab is **DEFERRED** and its earlier prioritization is obsolete.
+
 > **2026-10-27 Chromebook opportunity / narrow MVP:** See [AI Skills Lab MVP and Live Demo](CHROMEBOOK_AI_SKILLS_LAB_MVP_2026-10-27.md). The government announced 500k refurbished Chromebooks with MiFi, but actual eligible devices, permissions, cost and buyer are unverified. Pilot a low-bandwidth browser Python lesson + constrained bilingual AI tutor + teacher reporting, not full gaming/GPU platform. This is proposal only; the original Moonlight client remains separate.
 
 
