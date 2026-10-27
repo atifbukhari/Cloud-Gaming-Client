@@ -1,3 +1,5 @@
+> **ACTIVE MVP decision — 2026-10-27:** [Gaming-first MVP, actual GPU demo, minimal SessionOS and future CPU/GPU AI Desktop expansion](docs/GAMING_FIRST_MVP_AND_DEMO_2026-10-27.md). This supersedes the Chromebook education MVP as the execution priority. Physical Android and remote GPU acceptance remain unverified.
+
 > **Chromebook education MVP (2026-10-27):** [AI Skills Lab for Pakistan's planned 500,000-device Chromebook program — focused MVP/demo plan](docs/CHROMEBOOK_AI_SKILLS_LAB_MVP_2026-10-27.md). This is **proposed**, not a deployed product or government agreement.
 
 > **Hybrid Gaming + AI Desktop direction (2026-10-27):** [Co-funded Sky47/Jazz/platform partnership, AV1 bandwidth savings, CPU AI workspaces, GPU desktops and inference economics](docs/SHARED_FUNDING_AV1_AI_DESKTOP_STRATEGY_2026-10-27.md). The model and JV shareholding are **illustrative**, not agreed.
