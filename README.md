@@ -1,3 +1,5 @@
+> **Hybrid Gaming + AI Desktop direction (2026-10-27):** [Co-funded Sky47/Jazz/platform partnership, AV1 bandwidth savings, CPU AI workspaces, GPU desktops and inference economics](docs/SHARED_FUNDING_AV1_AI_DESKTOP_STRATEGY_2026-10-27.md). The model and JV shareholding are **illustrative**, not agreed.
+
 > **Pakistan commercial pilot model (2026-10-27):** [Platform + Sky47 + Jazz CAPEX/OPEX, partner margins, break-even and rollout gates](docs/PAKISTAN_SKY47_JAZZ_TRIPARTITE_ECONOMICS_2026-10-27.md). All numbers are editable economic scenarios, not negotiated terms.
 
 **2026-10-27 commercial focus:** [Unit economics and lowest-CAPEX segment strategy](docs/UNIT_ECONOMICS_MARKET_FOCUS_2026-10-27.md) — prioritize partner-funded GPU operator software; use paid, capped playable demos as fast-revenue wedge. Pricing scenarios are hypotheses; see editable workbook supplied with review.
