@@ -1,5 +1,8 @@
 # Cloud Gaming Platform 2.0 — Canonical Program Handover & Continuation Runbook
 
+> **2026-10-27 economic/technology refinement:** [Joint venture/co-investment + AV1 savings + Cloud AI Desktop architecture](SHARED_FUNDING_AV1_AI_DESKTOP_STRATEGY_2026-10-27.md). Prior gaming-only financial models are baseline scenarios, **not** the target product boundary or agreed partner split. GPU desktop, CPU workspace and AI inference have separate metering and licensing.
+
+
 **2026-10-27 commercial continuation:** Read [Unit Economics & Market Focus](UNIT_ECONOMICS_MARKET_FOCUS_2026-10-27.md) before committing GPU/consumer product spend. Primary target partner-funded operator SaaS; secondary paid interactive demo campaigns. All modeled pricing/margins are unvalidated hypotheses.
 **Date:** 2026-10-26  
 **Read with:** [Master plan](PLATFORM_MASTER_PLAN_2026-10-26.md), [Delivery WBS](PLATFORM_DELIVERY_WBS_2026-10-26.md), [Client canonical handoff](CANONICAL_HANDOFF_2026-10-23.md), [Decision/source ledger](PLATFORM_DECISIONS_AND_SOURCES_2026-10-26.md)
