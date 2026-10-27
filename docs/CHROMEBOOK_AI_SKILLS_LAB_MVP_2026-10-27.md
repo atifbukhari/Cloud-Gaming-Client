@@ -1,4 +1,7 @@
 # Chromebook Opportunity — AI Skills Lab MVP & Demo Plan
+
+> **SUPERSEDED / DEFERRED — 2026-10-27:** Following product review, this is **NOT the active MVP**. The active plan is [Gaming-first MVP & Partner Demo](GAMING_FIRST_MVP_AND_DEMO_2026-10-27.md), extending later into CPU-based and GPU-on-demand desktops. This document remains for historical exploration only; do not execute its EDU work items absent a new explicit business approval.
+
 **Date:** 2026-10-27  
 **Status:** Proposed *single-product* MVP. This document does not claim implementation, funding, public-program access or government/telecom partnership approval.  
 **Read with:** [Master Platform](PLATFORM_MASTER_PLAN_2026-10-26.md), [Joint funding / AI Workspace strategy](SHARED_FUNDING_AV1_AI_DESKTOP_STRATEGY_2026-10-27.md), [Handover](PLATFORM_HANDOVER_RUNBOOK_2026-10-26.md).
