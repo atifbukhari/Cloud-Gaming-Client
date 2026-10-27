@@ -1,4 +1,7 @@
 # Cloud Gaming Platform 2.0 — Delivery Roadmap & Work Breakdown Structure
+
+> **Current 2026-10-27 execution scope:** [Gaming-first MVP and Partner Demo](GAMING_FIRST_MVP_AND_DEMO_2026-10-27.md). Start with physical Android/TV acceptance, one host/session control, a single remote GPU game, metering and operator presentation. Defer broader AI workspace, school training, multi-GPU sharing, esports and multi-platform expansion. Treat older multi-phase WBS as long-term backlog, not authorization to build all products simultaneously.
+
 **Status:** Proposed execution plan; estimates are indicative and dependent on team/rights/resources  
 **Date:** 2026-10-26  
 **Program master:** [PLATFORM_MASTER_PLAN_2026-10-26.md](PLATFORM_MASTER_PLAN_2026-10-26.md)  
