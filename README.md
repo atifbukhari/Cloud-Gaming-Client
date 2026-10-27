@@ -1,3 +1,5 @@
+> **Chromebook education MVP (2026-10-27):** [AI Skills Lab for Pakistan's planned 500,000-device Chromebook program — focused MVP/demo plan](docs/CHROMEBOOK_AI_SKILLS_LAB_MVP_2026-10-27.md). This is **proposed**, not a deployed product or government agreement.
+
 > **Hybrid Gaming + AI Desktop direction (2026-10-27):** [Co-funded Sky47/Jazz/platform partnership, AV1 bandwidth savings, CPU AI workspaces, GPU desktops and inference economics](docs/SHARED_FUNDING_AV1_AI_DESKTOP_STRATEGY_2026-10-27.md). The model and JV shareholding are **illustrative**, not agreed.
 
 > **Pakistan commercial pilot model (2026-10-27):** [Platform + Sky47 + Jazz CAPEX/OPEX, partner margins, break-even and rollout gates](docs/PAKISTAN_SKY47_JAZZ_TRIPARTITE_ECONOMICS_2026-10-27.md). All numbers are editable economic scenarios, not negotiated terms.
