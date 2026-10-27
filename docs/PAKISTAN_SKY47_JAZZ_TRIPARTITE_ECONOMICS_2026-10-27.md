@@ -1,4 +1,7 @@
 # Pakistan 3-Partner Cloud Gaming Economics: Platform + Sky47 + Jazz
+
+> **2026-10-27 economic/technology refinement:** [Joint venture/co-investment + AV1 savings + Cloud AI Desktop architecture](SHARED_FUNDING_AV1_AI_DESKTOP_STRATEGY_2026-10-27.md). Prior gaming-only financial models are baseline scenarios, **not** the target product boundary or agreed partner split. GPU desktop, CPU workspace and AI inference have separate metering and licensing.
+
 **Date:** 2026-10-27  
 **Status:** Hypothesis model for negotiating a pilot. No quoted prices, actual Sky47 GPU inventory, signed Jazz participation, game licenses, QoS guarantees or confirmed partner agreements are assumed.  
 **Companion strategy:** [Unit Economics & Market Focus](UNIT_ECONOMICS_MARKET_FOCUS_2026-10-27.md) and [Platform Master](PLATFORM_MASTER_PLAN_2026-10-26.md).
