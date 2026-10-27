@@ -1,3 +1,5 @@
+> **Pakistan commercial pilot model (2026-10-27):** [Platform + Sky47 + Jazz CAPEX/OPEX, partner margins, break-even and rollout gates](docs/PAKISTAN_SKY47_JAZZ_TRIPARTITE_ECONOMICS_2026-10-27.md). All numbers are editable economic scenarios, not negotiated terms.
+
 **2026-10-27 commercial focus:** [Unit economics and lowest-CAPEX segment strategy](docs/UNIT_ECONOMICS_MARKET_FOCUS_2026-10-27.md) — prioritize partner-funded GPU operator software; use paid, capped playable demos as fast-revenue wedge. Pricing scenarios are hypotheses; see editable workbook supplied with review.
 
 > **Cloud Gaming Platform 2.0 — program plan (2026-10-26):** [Master architecture](docs/PLATFORM_MASTER_PLAN_2026-10-26.md) · [Delivery roadmap/WBS](docs/PLATFORM_DELIVERY_WBS_2026-10-26.md) · [Handover runbook](docs/PLATFORM_HANDOVER_RUNBOOK_2026-10-26.md) · [Decisions, risks & scope sources](docs/PLATFORM_DECISIONS_AND_SOURCES_2026-10-26.md) · [Review & approvals](docs/PLATFORM_REVIEW_CHECKLIST_2026-10-26.md). These are **review proposals** unless a gate is evidenced as passed; the dated client handoff below remains authoritative for actually verified Android E2E.
