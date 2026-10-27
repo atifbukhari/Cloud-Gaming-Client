@@ -1,4 +1,7 @@
 # Gaming-first MVP — From Local Moonlight Proof to Partner Demo and GPU-on-Demand Desktop
+
+> **Transport separation:** The future CPU desktop may use browser-based RDP/WebRTC or another efficient desktop protocol. It does not automatically inherit Moonlight streaming because CPU-only virtual machines may lack suitable hardware encode/display; assess guest OS, software encode cost and low-bandwidth user experience. Gaming/GPU workstation use Moonlight/Sunshine-compatible hardware encoding where proven. The **shared asset** is SessionOS identity, allocation, policy, metering and host abstraction, not one mandatory codec for all workloads.
+
 **Date:** 2026-10-27  
 **Decision status:** **ACTIVE proposed product direction**; approval to buy GPUs, host licensed games or distribute consumer service is **not** implied.  
 **Canonical client evidence:** [CANONICAL_HANDOFF_2026-10-23.md](CANONICAL_HANDOFF_2026-10-23.md)  
