@@ -1,4 +1,7 @@
 # Hybrid Cloud Gaming + Cloud AI Desktop: Shared Funding, Codec Economics, and Product Strategy
+
+> **SCOPE CLARIFICATION — 2026-10-27:** This file is a **future expansion and funding scenario**, not authorization to build four products simultaneously. First implement [Gaming-first MVP & Partner Demo](GAMING_FIRST_MVP_AND_DEMO_2026-10-27.md). AI desktop remains an optional downstream resource class; don't execute broad workspace features until the cloud gaming proof succeeds and buyer demand is established.
+
 **Date:** 2026-10-27  
 **Status:** Review hypothesis, not a JV agreement, price quotation, measured streaming result or guaranteed commercial return  
 **Market:** Pakistan example, with Sky47 (infra), Jazz (network/distribution) and our platform company (software/IP) as **illustrative candidate parties**.
