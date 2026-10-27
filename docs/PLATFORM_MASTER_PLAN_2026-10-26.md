@@ -1,4 +1,6 @@
 # Cloud Gaming Platform 2.0 — Master Product & Architecture Plan
+
+**2026-10-27 economics review:** [Unit economics and recommended commercial entry](UNIT_ECONOMICS_MARKET_FOCUS_2026-10-27.md). It narrows near-term development toward partner-funded GPU capacity and productized instant demos; no presumption of market-validated pricing or signed demand.
 **Status:** Proposed architecture / review baseline, not a claim of production implementation  
 **Date:** 2026-10-26  
 **Repository:** `atifbukhari/Cloud-Gaming-Client`  
